@@ -99,7 +99,7 @@ def build_speechlet_response(title, output, reprompt_text, should_end_session):
         },
         'card': {
             'type': 'Simple',
-            'title': title
+            'title': title,
             'content': output
         },
         'reprompt': {
@@ -156,43 +156,42 @@ def search_bartender(intent, session):
     """ Requests the DB to find the drink and get a recipe.
     """
 
-    card_title = "Recipe for " + intent['name']
+    card_title = "Recipe"
     session_attributes = {}
-    should_end_session = False
+    should_end_session = True
     
     if 'Drink' in intent['slots']:
         speech_output = getDrinkInformation(intent['slots']['Drink']['value'])
-        reprompt_text = intent['slots']['Drink']['value'] + "That drink\You can ask me your favorite color by saying, " \
-                        "what's my favorite color?"
+        reprompt_text = "That drink is not available. Please try another drink."
     else:
-        speech_output = "I'm not sure what your favorite color is. " \
+        speech_output = "I'm not sure what drink you want me to look up. " \
                         "Please try again."
-        reprompt_text = "I'm not sure what your favorite color is. " \
-                        "You can tell me your favorite color by saying, " \
-                        "my favorite color is red."
+        reprompt_text = "I'm not sure what drink you want me to look up. " \
+                        "You can ask me for a specific drink by saying, " \
+                        "A blue margarita. "
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
 
-def get_color_from_session(intent, session):
-    session_attributes = {}
-    reprompt_text = None
+# def get_color_from_session(intent, session):
+#     session_attributes = {}
+#     reprompt_text = None
 
-    if session.get('attributes', {}) and "favoriteColor" in session.get('attributes', {}):
-        favorite_color = session['attributes']['favoriteColor']
-        speech_output = "Your favorite color is " + favorite_color + \
-                        ". Goodbye."
-        should_end_session = True
-    else:
-        speech_output = "I'm not sure what your favorite color is. " \
-                        "You can say, my favorite color is red."
-        should_end_session = False
+#     if session.get('attributes', {}) and "favoriteColor" in session.get('attributes', {}):
+#         favorite_color = session['attributes']['favoriteColor']
+#         speech_output = "Your favorite color is " + favorite_color + \
+#                         ". Goodbye."
+#         should_end_session = True
+#     else:
+#         speech_output = "I'm not sure what your favorite color is. " \
+#                         "You can say, my favorite color is red."
+#         should_end_session = False
 
-    # Setting reprompt_text to None signifies that we do not want to reprompt
-    # the user. If the user does not respond or says something that is not
-    # understood, the session will end.
-    return build_response(session_attributes, build_speechlet_response(
-        intent['name'], speech_output, reprompt_text, should_end_session))
+#     # Setting reprompt_text to None signifies that we do not want to reprompt
+#     # the user. If the user does not respond or says something that is not
+#     # understood, the session will end.
+#     return build_response(session_attributes, build_speechlet_response(
+#         intent['name'], speech_output, reprompt_text, should_end_session))
 
 
 # --------------- Events ------------------
