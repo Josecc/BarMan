@@ -3,7 +3,6 @@ This is an Alexa Skill for mixed drinks.
 Authors:
 - Galina Belolipetski
 - Saad siddiqui
-- Erin Kocis
 - Jose Canahui
 """
 
