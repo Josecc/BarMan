@@ -99,8 +99,8 @@ def build_speechlet_response(title, output, reprompt_text, should_end_session):
         },
         'card': {
             'type': 'Simple',
-            'title': "SessionSpeechlet - " + title,
-            'content': "SessionSpeechlet - " + output
+            'title': title
+            'content': output
         },
         'reprompt': {
             'outputSpeech': {
@@ -156,7 +156,7 @@ def search_bartender(intent, session):
     """ Requests the DB to find the drink and get a recipe.
     """
 
-    card_title = intent['name']
+    card_title = "Recipe for " + intent['name']
     session_attributes = {}
     should_end_session = False
     
