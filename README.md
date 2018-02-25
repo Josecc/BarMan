@@ -1,4 +1,6 @@
 # BarMan Skill
 
-# Contributors
+## Contributors
 * Jose Canahui
+* Saad Siddiqui
+* Galina Belolipetski
