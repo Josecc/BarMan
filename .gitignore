@@ -1,1 +1,4 @@
 .application.json
+
+# Cloud 8 invocation files
+.~c9
