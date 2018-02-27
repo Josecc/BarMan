@@ -31,8 +31,8 @@ def getIngredients(requestedDrink):
             ingredientsList.append(ingredient)
     #print("INGREDIENTS: " + ingredientsList)
     return ingredientsList
-    
-#Listing the ingredients    
+
+#Listing the ingredients
 def listIngredients(requestedDrink):
     #print("Here are the ingredients you need to make ", requestedDrink["strDrink"])
     drinkIngredients = getIngredients(requestedDrink)
@@ -63,25 +63,23 @@ def multipleDrinksFound(drinksArray):
         if drink["strDrink"] == specificDrink:  # If the drink is found
             return drink
     return None                                 # If not found, return None
-     
+
 def getDrinkInformation(drink):
+    if (drink == None):                                 # Drink given was null
+        return "You need to specify which drink you want to make."
+
     DRINK = None #Global variable to hold the drink that is being instructed on
     drink.replace(" ", "_")
     response = requests.get("http://www.thecocktaildb.com/api/json/v1/1/search.php?s=%s" % (drink))
     json_res = response.json()
     drinksArray = json_res["drinks"]
     if (drinksArray == None):                           # No options
-        #print("Sorry, but we couldn't find that drink")
-        #sys.exit()
-        return "Not there"
+        return "Sorry, but we couldn't find that drink."
     #elif len(drinksArray) > 1:                          # More than 1 option
     #    DRINK = multipleDrinksFound(drinksArray)
     else:                                               # Only 1 option
         DRINK = drinksArray[0]
-        
-    if (DRINK == None):                                 # Couldn't find drink
-        print("Sorry but we couldn't find that drink")
-        
+
     return listIngredients(DRINK) + " " + listInstructions(DRINK)
 
 
@@ -147,10 +145,6 @@ def handle_session_end_request():
         card_title, speech_output, None, should_end_session))
 
 
-def create_favorite_color_attributes(favorite_color):
-    return {"favoriteColor": favorite_color}
-
-
 def search_bartender(intent, session):
     """ Requests the DB to find the drink and get a recipe.
     """
@@ -158,8 +152,9 @@ def search_bartender(intent, session):
     card_title = "Recipe"
     session_attributes = {}
     should_end_session = True
-    
-    if 'Drink' in intent['slots']:
+
+    # If the slot is filled, else if the slot is not filled (with a drink name)
+    if 'Drink' in intent['slots'] and 'value' in intent['slots']['Drink']:
         speech_output = getDrinkInformation(intent['slots']['Drink']['value'])
         reprompt_text = "That drink is not available. Please try another drink."
     else:
@@ -170,27 +165,6 @@ def search_bartender(intent, session):
                         "A blue margarita. "
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
-
-
-# def get_color_from_session(intent, session):
-#     session_attributes = {}
-#     reprompt_text = None
-
-#     if session.get('attributes', {}) and "favoriteColor" in session.get('attributes', {}):
-#         favorite_color = session['attributes']['favoriteColor']
-#         speech_output = "Your favorite color is " + favorite_color + \
-#                         ". Goodbye."
-#         should_end_session = True
-#     else:
-#         speech_output = "I'm not sure what your favorite color is. " \
-#                         "You can say, my favorite color is red."
-#         should_end_session = False
-
-#     # Setting reprompt_text to None signifies that we do not want to reprompt
-#     # the user. If the user does not respond or says something that is not
-#     # understood, the session will end.
-#     return build_response(session_attributes, build_speechlet_response(
-#         intent['name'], speech_output, reprompt_text, should_end_session))
 
 
 # --------------- Events ------------------
@@ -222,20 +196,8 @@ def on_intent(intent_request, session):
     intent = intent_request['intent']
     intent_name = intent_request['intent']['name']
 
-    # Dispatch to your skill's intent handlers
-    # if intent_name == "MyColorIsIntent":
-    #     return set_color_in_session(intent, session)
-    # elif intent_name == "WhatsMyColorIntent":
-    #     return get_color_from_session(intent, session)
-    # elif intent_name == "AMAZON.HelpIntent":
-    #     return get_welcome_response()
-    # elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
-    #     return handle_session_end_request()
-    # else:
-    #     raise ValueError("Invalid intent")
-    
     # Drinks intents
-    if intent_name == "Bartender":
+    if intent_name == "LookUpRecipe":
         return search_bartender(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
