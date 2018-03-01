@@ -10,6 +10,7 @@ from __future__ import print_function
 
 from botocore.vendored import requests
 from pprint import pprint
+import os
 
 # Helper function: Given a drink, get the ingredients in an array
 def getIngredients(requestedDrink):
@@ -70,7 +71,10 @@ def getDrinkInformation(drink):
 
     DRINK = None #Global variable to hold the drink that is being instructed on
     drink.replace(" ", "_")
-    response = requests.get("http://www.thecocktaildb.com/api/json/v1/1/search.php?s=%s" % (drink))
+    api_key = "1"
+    if ("COCKTAIL_DB_API_KEY" in os.environ):
+        api_key = os.environ["COCKTAIL_DB_API_KEY"]
+    response = requests.get("http://www.thecocktaildb.com/api/json/v1/%s/search.php?s=%s" % (api_key, drink))
     json_res = response.json()
     drinksArray = json_res["drinks"]
     if (drinksArray == None):                           # No options
